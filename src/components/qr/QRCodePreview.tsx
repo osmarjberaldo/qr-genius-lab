@@ -113,29 +113,43 @@ END:VEVENT`;
     const canvas = document.getElementById("qrcode") as HTMLCanvasElement;
     if (!canvas) return;
 
-    if (navigator.share) {
-      try {
-        const blob = await new Promise<Blob>((resolve) => {
-          canvas.toBlob((blob) => {
-            if (blob) resolve(blob);
-          }, "image/png");
-        });
-
+    try {
+      canvas.toBlob(async (blob) => {
+        if (!blob) {
+          toast.error("Não foi possível gerar a imagem para compartilhamento");
+          return;
+        }
+        
         const file = new File([blob], "qrcode.png", { type: "image/png" });
-
-        await navigator.share({
-          title: "QR Code Compartilhado",
-          text: "Aqui está seu QR Code personalizado",
-          files: [file],
-        });
-
-        toast.success("QR Code compartilhado com sucesso!");
-      } catch (error) {
-        console.error("Error sharing:", error);
-        toast.error("Não foi possível compartilhar o QR Code");
-      }
-    } else {
-      toast.error("Compartilhamento não suportado neste navegador");
+        
+        if (navigator.share && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              title: "QR Code Compartilhado",
+              text: "Aqui está seu QR Code personalizado",
+              files: [file],
+            });
+            toast.success("QR Code compartilhado com sucesso!");
+          } catch (error) {
+            console.error("Error sharing:", error);
+            toast.error("Compartilhamento cancelado ou não suportado");
+          }
+        } else {
+          // Fallback para navegadores que não suportam Web Share API com arquivos
+          const url = URL.createObjectURL(blob);
+          const tempLink = document.createElement('a');
+          tempLink.href = url;
+          tempLink.download = `qrcode-${type}-${Date.now()}.png`;
+          document.body.appendChild(tempLink);
+          tempLink.click();
+          document.body.removeChild(tempLink);
+          URL.revokeObjectURL(url);
+          toast.success("QR Code baixado com sucesso!");
+        }
+      }, "image/png");
+    } catch (error) {
+      console.error("Error preparing share:", error);
+      toast.error("Não foi possível compartilhar o QR Code");
     }
   };
 
