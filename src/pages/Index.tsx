@@ -14,7 +14,7 @@ const Index = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className="py-8"
+            className="py-12"
           >
             <QRCodeGenerator />
           </motion.div>

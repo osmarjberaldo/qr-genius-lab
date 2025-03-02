@@ -109,10 +109,10 @@
   }
 
   .qr-option {
-    @apply flex flex-col items-center justify-center p-4 rounded-2xl transition-all duration-300 hover:bg-secondary/50 cursor-pointer border-2 border-transparent hover:border-primary/20;
+    @apply flex flex-col items-center justify-center py-5 px-4 rounded-2xl transition-all duration-300 hover:bg-secondary/70 cursor-pointer border-2 border-transparent hover:border-primary/30 hover:shadow-md;
   }
 
   .qr-option.active {
-    @apply bg-accent border-primary/30;
+    @apply bg-accent/70 border-primary/50 shadow-md;
   }
 }
