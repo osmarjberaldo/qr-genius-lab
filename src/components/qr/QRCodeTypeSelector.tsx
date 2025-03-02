@@ -157,25 +157,25 @@ const QRCodeTypeSelector = ({ selectedType, onTypeSelect }: QRCodeTypeSelectorPr
   };
 
   return (
-    <div>
+    <div className="px-2 py-4">
       <motion.div
         variants={container}
         initial="hidden"
         animate="show"
-        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6"
+        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8"
       >
         {qrTypes.map((type) => (
           <motion.div
             key={type.id}
             variants={item}
             onClick={() => onTypeSelect(type.id)}
-            className={`qr-option ${selectedType === type.id ? "active" : ""} p-6`}
+            className={`qr-option ${selectedType === type.id ? "active" : ""} p-8`}
           >
-            <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 ${selectedType === type.id ? "text-primary" : "text-muted-foreground"}`}>
+            <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-4 ${selectedType === type.id ? "text-primary" : "text-muted-foreground"}`}>
               {type.icon}
             </div>
             <div className="text-center">
-              <div className="font-medium text-sm mb-1">{type.name}</div>
+              <div className="font-medium text-sm mb-2">{type.name}</div>
               <div className="text-xs text-muted-foreground">{type.description}</div>
             </div>
           </motion.div>
