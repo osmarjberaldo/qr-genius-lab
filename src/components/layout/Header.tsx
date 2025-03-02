@@ -1,7 +1,7 @@
 
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Qrcode } from "lucide-react";
+import { QrCode } from "lucide-react";
 import { ModeToggle } from "./ModeToggle";
 
 const Header = () => {
@@ -14,7 +14,7 @@ const Header = () => {
     >
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <Link to="/" className="flex items-center gap-2 hover-scale">
-          <Qrcode className="h-6 w-6" />
+          <QrCode className="h-6 w-6" />
           <span className="font-semibold text-lg">QR Genius Lab</span>
         </Link>
         

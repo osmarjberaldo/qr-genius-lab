@@ -59,7 +59,7 @@ export interface QRCodeData {
   query?: string;
   
   // Event
-  title?: string;
+  eventTitle?: string;
   location?: string;
   startDate?: string;
   endDate?: string;
