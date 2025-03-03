@@ -1,11 +1,14 @@
 
 import { useState, useEffect } from "react";
 import { QRCodeCanvas } from "qrcode.react";
+import PIX from "react-qrcode-pix";
 import { Button } from "@/components/ui/button";
 import { QRCodeType, QRCodeData, QRCodeCustomizationOptions } from "@/types/qr-types";
 import { Download, Share2, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+
+const now = new Date().getTime().toString();
 
 interface QRCodePreviewProps {
   data: QRCodeData;
@@ -15,7 +18,9 @@ interface QRCodePreviewProps {
 
 const QRCodePreview = ({ data, type, options }: QRCodePreviewProps) => {
   const [qrValue, setQrValue] = useState<string>("");
+  const [pixCode, setPixCode] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [fullPIX, setFullPIX] = useState("");
 
   useEffect(() => {
     setIsLoading(true);
@@ -31,6 +36,10 @@ const QRCodePreview = ({ data, type, options }: QRCodePreviewProps) => {
     let value = "";
 
     switch (type) {
+      case "whatsapp":
+        const phoneNumber = data.phoneNumber?.replace(/\D/g, "") || "";
+        value = `https://wa.me/${phoneNumber}${data.message ? "?text=" + encodeURIComponent(data.message) : ""}`;
+        break;
       case "url":
         value = data.url || "";
         break;
@@ -45,11 +54,6 @@ TEL;TYPE=WORK,VOICE:${data.phone || ""}
 EMAIL:${data.email || ""}
 URL:${data.website || ""}
 END:VCARD`;
-        break;
-      case "pix":
-        value = `00020126330014BR.GOV.BCB.PIX0111${data.pixKey || ""}5204000053039865802BR5913${
-          data.merchantName || ""
-        }6008BRASILIA62070503***63044297`;
         break;
       case "email":
         value = `mailto:${data.emailAddress || ""}?subject=${encodeURIComponent(data.subject || "")}&body=${encodeURIComponent(
@@ -78,6 +82,33 @@ DESCRIPTION:${data.description || ""}
 DTSTART:${startDate}
 DTEND:${endDate}
 END:VEVENT`;
+        break;
+      case "pdf":
+        value = data.url || "";
+        break;
+      case "phone":
+        value = `tel:${data.phoneNumber || ""}`;
+        break;
+      case "app":
+        value = data.url || "";
+        break;
+      case "image":
+        value = data.url || "";
+        break;
+      case "video":
+        value = data.url || "";
+        break;
+      case "store":
+        value = data.url || "";
+        break;
+      case "biolink":
+        value = data.url || "";
+        break;
+      case "music":
+        value = data.url || "";
+        break;
+      case "text":
+        value = data.text || "";
         break;
       default:
         value = "";
@@ -135,7 +166,6 @@ END:VEVENT`;
             toast.error("Compartilhamento cancelado ou não suportado");
           }
         } else {
-          // Fallback para navegadores que não suportam Web Share API com arquivos
           const url = URL.createObjectURL(blob);
           const tempLink = document.createElement('a');
           tempLink.href = url;
@@ -154,19 +184,21 @@ END:VEVENT`;
   };
 
   const isDataEmpty = () => {
+    if (type === "whatsapp") return !data.phoneNumber;
     if (type === "url") return !data.url;
     if (type === "vcard") return !data.firstName && !data.lastName && !data.email && !data.phone;
-    if (type === "pix") return !data.pixKey;
+    if (type === "pix") return !data.pixKey || !data.merchantName;
     if (type === "email") return !data.emailAddress;
     if (type === "sms") return !data.phoneNumber;
     if (type === "wifi") return !data.ssid;
     if (type === "bitcoin") return !data.address;
     if (type === "location") return (!data.latitude || !data.longitude) && !data.query;
     if (type === "event") return !data.title;
+    if (type === "pdf") return !data.url || !data.url.toLowerCase().endsWith('.pdf');
+    if (type === "app") return !data.url;
     return true;
   };
 
-  // Custom background for gradient or solid color
   const getBackgroundStyle = () => {
     if (options.isGradient && options.gradientColors?.length >= 2) {
       return {
@@ -177,52 +209,70 @@ END:VEVENT`;
   };
 
   return (
-    <div className="flex flex-col items-center space-y-6 w-full">
+    <div className="flex flex-col items-center justify-center space-y-6 w-full p-4 sm:p-6 md:p-8 mx-auto">
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="relative"
+        className="relative w-full flex items-center justify-center"
       >
         {isLoading ? (
-          <div className="w-[260px] h-[260px] flex items-center justify-center">
-            <RefreshCw className="animate-spin text-primary/50" size={40} />
+          <div className="w-full max-w-[500px] aspect-square flex items-center justify-center">
+            <RefreshCw className="animate-spin text-primary/50" size={50} />
           </div>
         ) : isDataEmpty() ? (
-          <div className="w-[260px] h-[260px] flex items-center justify-center border-2 border-dashed border-primary/20 rounded-xl">
-            <p className="text-muted-foreground text-center px-6">Preencha os dados para gerar o QR Code</p>
+          <div className="w-full max-w-[500px] aspect-square flex items-center justify-center border-2 border-dashed border-primary/20 rounded-xl">
+            <p className="text-muted-foreground text-center px-4 sm:px-8 text-sm sm:text-base md:text-lg">Preencha os dados para gerar o QR Code</p>
           </div>
         ) : (
           <div
-            className="p-6 rounded-2xl shadow-lg"
+            className="p-4 sm:p-6 md:p-8 rounded-2xl shadow-lg max-w-full overflow-hidden flex items-center justify-center"
             style={getBackgroundStyle()}
           >
-            <QRCodeCanvas
-              id="qrcode"
-              value={qrValue}
-              size={options.size}
-              bgColor={options.isGradient ? "transparent" : options.bgColor}
-              fgColor={options.fgColor}
-              level={options.level as "L" | "M" | "Q" | "H"}
-              includeMargin={options.includeMargin}
-              imageSettings={
-                options.imageSource
-                  ? {
-                      src: options.imageSource,
-                      x: undefined,
-                      y: undefined,
-                      height: 40,
-                      width: 40,
-                      excavate: true,
-                    }
-                  : undefined
-              }
-            />
+            {type === "pix" ? (
+              <PIX
+                pixkey={data.pixKey || "osmarjunioberaldo@hotmail.com"}
+                merchant={data.merchantName || "Osmar Junio Beraldo"}
+                city={data.city || "Bandeirantes"}
+                cep={data.cep || "86.390-000"}
+                code={"RQP" + now}
+                amount={data.amount ? parseFloat(data.amount) : undefined}
+                onLoad={setFullPIX}
+                resize={384}
+                variant="fluid"
+                padding={30}
+                color={options.fgColor}
+                bgColor={options.isGradient ? "transparent" : options.bgColor}
+                bgRounded
+                divider
+              />     
+            ) : (
+              <QRCodeCanvas
+                id="qrcode"
+                value={qrValue}
+                size={options.size}
+                bgColor={options.isGradient ? "transparent" : options.bgColor}
+                fgColor={options.fgColor}
+                level={options.level as "L" | "M" | "Q" | "H"}
+                includeMargin={options.includeMargin}
+                imageSettings={
+                  options.imageSource
+                    ? {
+                        src: options.imageSource,
+                        x: undefined,
+                        y: undefined,
+                        height: 50,
+                        width: 50,
+                        excavate: true,
+                      }
+                    : undefined
+                }
+              />
+            )}
           </div>
         )}
       </motion.div>
-
-      <div className="flex space-x-3">
+      <div className="flex space-x-4 mt-6">
         <Button
           variant="outline"
           onClick={downloadQRCode}

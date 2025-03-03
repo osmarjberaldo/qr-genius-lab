@@ -7,8 +7,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Header from "./components/layout/Header";
+import Footer from "./components/layout/Footer";
 import ComoUsar from "./pages/ComoUsar";
 import Sobre from "./pages/Sobre";
+import Exemplos from "./pages/Exemplos";
+
 
 const queryClient = new QueryClient();
 
@@ -25,10 +28,12 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/como-usar" element={<ComoUsar />} />
               <Route path="/sobre" element={<Sobre />} />
+              <Route path="/exemplos" element={<Exemplos />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
+          <Footer />
         </div>
       </BrowserRouter>
     </TooltipProvider>

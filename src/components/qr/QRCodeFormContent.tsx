@@ -55,6 +55,90 @@ const QRCodeFormContent = ({ type, data, onChange }: QRCodeFormContentProps) => 
           </div>
         );
 
+      case "image":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="url">URL da Imagem</Label>
+              <Input
+                id="url"
+                name="url"
+                placeholder="https://exemplo.com/imagem.jpg"
+                value={data.url || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("url")}
+                onBlur={() => setFocusedInput(null)}
+              />
+              <p className="text-xs text-muted-foreground">
+                Insira o link direto para a imagem (JPG, PNG, GIF, etc.)
+              </p>
+            </div>
+          </div>
+        );
+
+      case "video":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="url">URL do Vídeo</Label>
+              <Input
+                id="url"
+                name="url"
+                placeholder="https://youtube.com/watch?v=..."
+                value={data.url || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("url")}
+                onBlur={() => setFocusedInput(null)}
+              />
+              <p className="text-xs text-muted-foreground">
+                Suporta links do YouTube, Vimeo e outros serviços de vídeo
+              </p>
+            </div>
+          </div>
+        );
+
+      case "store":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="url">URL da Loja</Label>
+              <Input
+                id="url"
+                name="url"
+                placeholder="https://minhaloja.com.br"
+                value={data.url || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("url")}
+                onBlur={() => setFocusedInput(null)}
+              />
+              <p className="text-xs text-muted-foreground">
+                Link para sua loja online ou marketplace
+              </p>
+            </div>
+          </div>
+        );
+
+      case "biolink":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="url">URL do Bio Link</Label>
+              <Input
+                id="url"
+                name="url"
+                placeholder="https://linktree.com/seuperfil"
+                value={data.url || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("url")}
+                onBlur={() => setFocusedInput(null)}
+              />
+              <p className="text-xs text-muted-foreground">
+                Link para seu perfil do Linktree, Beacons, ou similar
+              </p>
+            </div>
+          </div>
+        );
+
       case "vcard":
         return (
           <div className="space-y-4">
@@ -175,13 +259,41 @@ const QRCodeFormContent = ({ type, data, onChange }: QRCodeFormContentProps) => 
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="amount">Valor (opcional)</Label>
+              <Label htmlFor="city">Cidade</Label>
+              <Input
+                id="city"
+                name="city"
+                placeholder="São Paulo"
+                value={data.city || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("city")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="cep">CEP</Label>
+              <Input
+                id="cep"
+                name="cep"
+                placeholder="00000-000"
+                value={data.cep || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("cep")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="amount">Valor em R$</Label>
               <Input
                 id="amount"
                 name="amount"
-                placeholder="100.00"
-                value={data.amount || ""}
-                onChange={handleChange}
+                placeholder="R$ 0,00"
+                value={data.amount ? `R$ ${Number(data.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : ""}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^0-9]/g, '');
+                  const numberValue = Number(value) / 100;
+                  onChange({ amount: numberValue.toString() });
+                }}
                 onFocus={() => setFocusedInput("amount")}
                 onBlur={() => setFocusedInput(null)}
               />
@@ -451,6 +563,1155 @@ const QRCodeFormContent = ({ type, data, onChange }: QRCodeFormContentProps) => 
                 rows={3}
               />
             </div>
+          </div>
+        );
+
+      case "music":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="url">Link da Música</Label>
+              <Input
+                id="url"
+                name="url"
+                placeholder="https://open.spotify.com/track/..."
+                value={data.url || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("url")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Suporta links do Spotify, Apple Music, YouTube Music, Deezer e outros serviços de streaming.
+            </p>
+          </div>
+        );
+
+      case "whatsapp":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="phoneNumber">Número do WhatsApp</Label>
+              <Input
+                id="phoneNumber"
+                name="phoneNumber"
+                placeholder="11987654321"
+                value={data.phoneNumber || ""}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, "");
+                  handleChange({
+                    target: {
+                      name: "phoneNumber",
+                      value: value
+                    }
+                  } as React.ChangeEvent<HTMLInputElement>);
+                }}
+                onFocus={() => setFocusedInput("phoneNumber")}
+                onBlur={() => setFocusedInput(null)}
+              />
+              <p className="text-xs text-muted-foreground">
+                Digite apenas números, sem espaços ou caracteres especiais
+              </p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="message">Mensagem (opcional)</Label>
+              <Textarea
+                id="message"
+                name="message"
+                placeholder="Olá! Gostaria de conversar..."
+                value={data.message || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("message")}
+                onBlur={() => setFocusedInput(null)}
+                rows={4}
+              />
+            </div>
+          </div>
+        );
+
+      case "pdf":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="url">Link do PDF</Label>
+              <Input
+                id="url"
+                name="url"
+                placeholder="https://exemplo.com/documento.pdf"
+                value={data.url || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("url")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="description">Descrição (opcional)</Label>
+              <Textarea
+                id="description"
+                name="description"
+                placeholder="Adicione uma descrição para o documento"
+                value={data.description || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("description")}
+                onBlur={() => setFocusedInput(null)}
+                rows={3}
+              />
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Suporta links diretos para arquivos PDF. Certifique-se de que o link termine com .pdf
+            </p>
+          </div>
+        );
+
+      case "phone":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="phone">Telefone</Label>
+              <Input
+                id="phone"
+                name="phone"
+                placeholder="(11) 98765-4321"
+                value={data.phone || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("phone")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">E-mail</Label>
+              <Input
+                id="email"
+                name="email"
+                placeholder="joao@exemplo.com"
+                value={data.email || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("email")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="website">Website</Label>
+              <Input
+                id="website"
+                name="website"
+                placeholder="https://exemplo.com"
+                value={data.website || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("website")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+          </div>
+        );
+
+      case "email":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="emailAddress">Destinatário</Label>
+              <Input
+                id="emailAddress"
+                name="emailAddress"
+                placeholder="destinatario@exemplo.com"
+                value={data.emailAddress || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("emailAddress")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="subject">Assunto</Label>
+              <Input
+                id="subject"
+                name="subject"
+                placeholder="Assunto do e-mail"
+                value={data.subject || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("subject")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="body">Mensagem</Label>
+              <Textarea
+                id="body"
+                name="body"
+                placeholder="Conteúdo do e-mail"
+                value={data.body || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("body")}
+                onBlur={() => setFocusedInput(null)}
+                rows={4}
+              />
+            </div>
+          </div>
+        );
+
+      case "sms":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="phoneNumber">Número de Telefone</Label>
+              <Input
+                id="phoneNumber"
+                name="phoneNumber"
+                placeholder="+5511987654321"
+                value={data.phoneNumber || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("phoneNumber")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="message">Mensagem (opcional)</Label>
+              <Textarea
+                id="message"
+                name="message"
+                placeholder="Conteúdo da mensagem"
+                value={data.message || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("message")}
+                onBlur={() => setFocusedInput(null)}
+                rows={4}
+              />
+            </div>
+          </div>
+        );
+
+      case "wifi":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="ssid">Nome da Rede (SSID)</Label>
+              <Input
+                id="ssid"
+                name="ssid"
+                placeholder="Nome da rede Wi-Fi"
+                value={data.ssid || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("ssid")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Senha</Label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Senha da rede Wi-Fi"
+                value={data.password || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("password")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="encryption">Tipo de Segurança</Label>
+              <Select
+                name="encryption"
+                value={data.encryption || "WPA"}
+                onValueChange={(value) => handleSelectChange("encryption", value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o tipo de segurança" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="WPA">WPA/WPA2/WPA3</SelectItem>
+                  <SelectItem value="WEP">WEP</SelectItem>
+                  <SelectItem value="nopass">Sem Senha</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        );
+
+      case "bitcoin":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="address">Endereço da Carteira</Label>
+              <Input
+                id="address"
+                name="address"
+                placeholder="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
+                value={data.address || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("address")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="amount">Valor em BTC (opcional)</Label>
+              <Input
+                id="amount"
+                name="amount"
+                placeholder="0.001"
+                value={data.amount || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("amount")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+          </div>
+        );
+
+      case "location":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="query">Endereço ou Local</Label>
+              <Input
+                id="query"
+                name="query"
+                placeholder="Av. Paulista, São Paulo"
+                value={data.query || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("query")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="latitude">Latitude</Label>
+                <Input
+                  id="latitude"
+                  name="latitude"
+                  placeholder="-23.5505"
+                  value={data.latitude || ""}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedInput("latitude")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="longitude">Longitude</Label>
+                <Input
+                  id="longitude"
+                  name="longitude"
+                  placeholder="-46.6333"
+                  value={data.longitude || ""}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedInput("longitude")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+            </div>
+          </div>
+        );
+
+      case "event":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="title">Título do Evento</Label>
+              <Input
+                id="title"
+                name="title"
+                placeholder="Conferência de Tecnologia"
+                value={data.title || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("title")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="location">Local</Label>
+              <Input
+                id="location"
+                name="location"
+                placeholder="Centro de Convenções, São Paulo"
+                value={data.location || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("location")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="startDate">Data de Início</Label>
+                <Input
+                  id="startDate"
+                  name="startDate"
+                  type="datetime-local"
+                  value={data.startDate || ""}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedInput("startDate")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="endDate">Data de Término</Label>
+                <Input
+                  id="endDate"
+                  name="endDate"
+                  type="datetime-local"
+                  value={data.endDate || ""}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedInput("endDate")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="description">Descrição</Label>
+              <Textarea
+                id="description"
+                name="description"
+                placeholder="Detalhes sobre o evento"
+                value={data.description || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("description")}
+                onBlur={() => setFocusedInput(null)}
+                rows={3}
+              />
+            </div>
+          </div>
+        );
+
+      case "music":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="url">Link da Música</Label>
+              <Input
+                id="url"
+                name="url"
+                placeholder="https://open.spotify.com/track/..."
+                value={data.url || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("url")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Suporta links do Spotify, Apple Music, YouTube Music, Deezer e outros serviços de streaming.
+            </p>
+          </div>
+        );
+
+      case "pdf":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="url">Link do PDF</Label>
+              <Input
+                id="url"
+                name="url"
+                placeholder="https://exemplo.com/documento.pdf"
+                value={data.url || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("url")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="description">Descrição (opcional)</Label>
+              <Textarea
+                id="description"
+                name="description"
+                placeholder="Adicione uma descrição para o documento"
+                value={data.description || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("description")}
+                onBlur={() => setFocusedInput(null)}
+                rows={3}
+              />
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Suporta links diretos para arquivos PDF. Certifique-se de que o link termine com .pdf
+            </p>
+          </div>
+        );
+
+      case "phone":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="phone">Telefone</Label>
+              <Input
+                id="phone"
+                name="phone"
+                placeholder="(11) 98765-4321"
+                value={data.phone || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("phone")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">E-mail</Label>
+              <Input
+                id="email"
+                name="email"
+                placeholder="joao@exemplo.com"
+                value={data.email || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("email")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="website">Website</Label>
+              <Input
+                id="website"
+                name="website"
+                placeholder="https://exemplo.com"
+                value={data.website || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("website")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+          </div>
+        );
+
+      case "email":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="emailAddress">Destinatário</Label>
+              <Input
+                id="emailAddress"
+                name="emailAddress"
+                placeholder="destinatario@exemplo.com"
+                value={data.emailAddress || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("emailAddress")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="subject">Assunto</Label>
+              <Input
+                id="subject"
+                name="subject"
+                placeholder="Assunto do e-mail"
+                value={data.subject || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("subject")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="body">Mensagem</Label>
+              <Textarea
+                id="body"
+                name="body"
+                placeholder="Conteúdo do e-mail"
+                value={data.body || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("body")}
+                onBlur={() => setFocusedInput(null)}
+                rows={4}
+              />
+            </div>
+          </div>
+        );
+
+      case "sms":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="phoneNumber">Número de Telefone</Label>
+              <Input
+                id="phoneNumber"
+                name="phoneNumber"
+                placeholder="+5511987654321"
+                value={data.phoneNumber || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("phoneNumber")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="message">Mensagem (opcional)</Label>
+              <Textarea
+                id="message"
+                name="message"
+                placeholder="Conteúdo da mensagem"
+                value={data.message || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("message")}
+                onBlur={() => setFocusedInput(null)}
+                rows={4}
+              />
+            </div>
+          </div>
+        );
+
+      case "wifi":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="ssid">Nome da Rede (SSID)</Label>
+              <Input
+                id="ssid"
+                name="ssid"
+                placeholder="Nome da rede Wi-Fi"
+                value={data.ssid || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("ssid")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Senha</Label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Senha da rede Wi-Fi"
+                value={data.password || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("password")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="encryption">Tipo de Segurança</Label>
+              <Select
+                name="encryption"
+                value={data.encryption || "WPA"}
+                onValueChange={(value) => handleSelectChange("encryption", value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o tipo de segurança" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="WPA">WPA/WPA2/WPA3</SelectItem>
+                  <SelectItem value="WEP">WEP</SelectItem>
+                  <SelectItem value="nopass">Sem Senha</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        );
+
+      case "bitcoin":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="address">Endereço da Carteira</Label>
+              <Input
+                id="address"
+                name="address"
+                placeholder="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
+                value={data.address || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("address")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="amount">Valor em BTC (opcional)</Label>
+              <Input
+                id="amount"
+                name="amount"
+                placeholder="0.001"
+                value={data.amount || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("amount")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+          </div>
+        );
+
+      case "location":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="query">Endereço ou Local</Label>
+              <Input
+                id="query"
+                name="query"
+                placeholder="Av. Paulista, São Paulo"
+                value={data.query || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("query")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="latitude">Latitude</Label>
+                <Input
+                  id="latitude"
+                  name="latitude"
+                  placeholder="-23.5505"
+                  value={data.latitude || ""}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedInput("latitude")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="longitude">Longitude</Label>
+                <Input
+                  id="longitude"
+                  name="longitude"
+                  placeholder="-46.6333"
+                  value={data.longitude || ""}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedInput("longitude")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+            </div>
+          </div>
+        );
+
+      case "event":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="title">Título do Evento</Label>
+              <Input
+                id="title"
+                name="title"
+                placeholder="Conferência de Tecnologia"
+                value={data.title || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("title")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="location">Local</Label>
+              <Input
+                id="location"
+                name="location"
+                placeholder="Centro de Convenções, São Paulo"
+                value={data.location || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("location")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="startDate">Data de Início</Label>
+                <Input
+                  id="startDate"
+                  name="startDate"
+                  type="datetime-local"
+                  value={data.startDate || ""}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedInput("startDate")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="endDate">Data de Término</Label>
+                <Input
+                  id="endDate"
+                  name="endDate"
+                  type="datetime-local"
+                  value={data.endDate || ""}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedInput("endDate")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="description">Descrição</Label>
+              <Textarea
+                id="description"
+                name="description"
+                placeholder="Detalhes sobre o evento"
+                value={data.description || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("description")}
+                onBlur={() => setFocusedInput(null)}
+                rows={3}
+              />
+            </div>
+          </div>
+        );
+
+      case "music":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="url">Link da Música</Label>
+              <Input
+                id="url"
+                name="url"
+                placeholder="https://open.spotify.com/track/..."
+                value={data.url || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("url")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Suporta links do Spotify, Apple Music, YouTube Music, Deezer e outros serviços de streaming.
+            </p>
+          </div>
+        );
+
+      case "pdf":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="url">Link do PDF</Label>
+              <Input
+                id="url"
+                name="url"
+                placeholder="https://exemplo.com/documento.pdf"
+                value={data.url || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("url")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="description">Descrição (opcional)</Label>
+              <Textarea
+                id="description"
+                name="description"
+                placeholder="Adicione uma descrição para o documento"
+                value={data.description || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("description")}
+                onBlur={() => setFocusedInput(null)}
+                rows={3}
+              />
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Suporta links diretos para arquivos PDF. Certifique-se de que o link termine com .pdf
+            </p>
+          </div>
+        );
+
+      case "phone":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="phone">Telefone</Label>
+              <Input
+                id="phone"
+                name="phone"
+                placeholder="(11) 98765-4321"
+                value={data.phone || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("phone")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">E-mail</Label>
+              <Input
+                id="email"
+                name="email"
+                placeholder="joao@exemplo.com"
+                value={data.email || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("email")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="website">Website</Label>
+              <Input
+                id="website"
+                name="website"
+                placeholder="https://exemplo.com"
+                value={data.website || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("website")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+          </div>
+        );
+
+      case "email":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="emailAddress">Destinatário</Label>
+              <Input
+                id="emailAddress"
+                name="emailAddress"
+                placeholder="destinatario@exemplo.com"
+                value={data.emailAddress || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("emailAddress")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="subject">Assunto</Label>
+              <Input
+                id="subject"
+                name="subject"
+                placeholder="Assunto do e-mail"
+                value={data.subject || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("subject")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="body">Mensagem</Label>
+              <Textarea
+                id="body"
+                name="body"
+                placeholder="Conteúdo do e-mail"
+                value={data.body || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("body")}
+                onBlur={() => setFocusedInput(null)}
+                rows={4}
+              />
+            </div>
+          </div>
+        );
+
+      case "sms":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="phoneNumber">Número de Telefone</Label>
+              <Input
+                id="phoneNumber"
+                name="phoneNumber"
+                placeholder="+5511987654321"
+                value={data.phoneNumber || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("phoneNumber")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="message">Mensagem (opcional)</Label>
+              <Textarea
+                id="message"
+                name="message"
+                placeholder="Conteúdo da mensagem"
+                value={data.message || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("message")}
+                onBlur={() => setFocusedInput(null)}
+                rows={4}
+              />
+            </div>
+          </div>
+        );
+
+      case "wifi":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="ssid">Nome da Rede (SSID)</Label>
+              <Input
+                id="ssid"
+                name="ssid"
+                placeholder="Nome da rede Wi-Fi"
+                value={data.ssid || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("ssid")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Senha</Label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Senha da rede Wi-Fi"
+                value={data.password || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("password")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="encryption">Tipo de Segurança</Label>
+              <Select
+                name="encryption"
+                value={data.encryption || "WPA"}
+                onValueChange={(value) => handleSelectChange("encryption", value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o tipo de segurança" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="WPA">WPA/WPA2/WPA3</SelectItem>
+                  <SelectItem value="WEP">WEP</SelectItem>
+                  <SelectItem value="nopass">Sem Senha</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        );
+
+      case "bitcoin":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="address">Endereço da Carteira</Label>
+              <Input
+                id="address"
+                name="address"
+                placeholder="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
+                value={data.address || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("address")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="amount">Valor em BTC (opcional)</Label>
+              <Input
+                id="amount"
+                name="amount"
+                placeholder="0.001"
+                value={data.amount || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("amount")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+          </div>
+        );
+
+      case "location":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="query">Endereço ou Local</Label>
+              <Input
+                id="query"
+                name="query"
+                placeholder="Av. Paulista, São Paulo"
+                value={data.query || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("query")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="latitude">Latitude</Label>
+                <Input
+                  id="latitude"
+                  name="latitude"
+                  placeholder="-23.5505"
+                  value={data.latitude || ""}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedInput("latitude")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="longitude">Longitude</Label>
+                <Input
+                  id="longitude"
+                  name="longitude"
+                  placeholder="-46.6333"
+                  value={data.longitude || ""}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedInput("longitude")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+            </div>
+          </div>
+        );
+
+      case "event":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="title">Título do Evento</Label>
+              <Input
+                id="title"
+                name="title"
+                placeholder="Conferência de Tecnologia"
+                value={data.title || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("title")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="location">Local</Label>
+              <Input
+                id="location"
+                name="location"
+                placeholder="Centro de Convenções, São Paulo"
+                value={data.location || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("location")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="startDate">Data de Início</Label>
+                <Input
+                  id="startDate"
+                  name="startDate"
+                  type="datetime-local"
+                  value={data.startDate || ""}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedInput("startDate")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="endDate">Data de Término</Label>
+                <Input
+                  id="endDate"
+                  name="endDate"
+                  type="datetime-local"
+                  value={data.endDate || ""}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedInput("endDate")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="description">Descrição</Label>
+              <Textarea
+                id="description"
+                name="description"
+                placeholder="Detalhes sobre o evento"
+                value={data.description || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("description")}
+                onBlur={() => setFocusedInput(null)}
+                rows={3}
+              />
+            </div>
+          </div>
+        );
+
+      case "music":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="url">Link da Música</Label>
+              <Input
+                id="url"
+                name="url"
+                placeholder="https://open.spotify.com/track/..."
+                value={data.url || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("url")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Suporta links do Spotify, Apple Music, YouTube Music, Deezer e outros serviços de streaming.
+            </p>
           </div>
         );
 

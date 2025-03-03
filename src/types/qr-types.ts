@@ -34,6 +34,7 @@ export interface QRCodeData {
   // PIX
   pixKey?: string;
   merchantName?: string;
+  city?: string;
   amount?: string;
   
   // Email

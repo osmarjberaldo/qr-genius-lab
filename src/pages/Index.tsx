@@ -7,7 +7,7 @@ import Container from "@/components/ui-elements/Container";
 const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-accent/20 py-8">
-      <Container>
+      <Container maxWidth="full">
         <AnimatePresence mode="wait">
           <motion.div
             initial={{ opacity: 0 }}

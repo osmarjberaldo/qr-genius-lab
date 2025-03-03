@@ -15,7 +15,7 @@ const Header = () => {
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <Link to="/" className="flex items-center gap-3 hover-scale">
           <QrCode className="h-6 w-6" />
-          <span className="font-semibold text-lg">QR Genius Lab</span>
+          <span className="font-semibold text-lg">Gerador de QR Code Free</span>
         </Link>
         
         <nav className="hidden md:flex items-center gap-8">

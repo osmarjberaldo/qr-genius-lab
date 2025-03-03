@@ -6,7 +6,7 @@ import { HelpCircle, FileText, Smartphone, Share2, Download, Settings } from "lu
 const ComoUsar = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-accent/20 py-8">
-      <Container maxWidth="xl">
+      <Container maxWidth="full">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -14,7 +14,7 @@ const ComoUsar = () => {
           className="space-y-8"
         >
           <div className="text-center space-y-3">
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground">Como Usar o QR Genius Lab</h1>
+            <h1 className="text-3xl md:text-4xl font-bold text-foreground">Como Usar o Gerador de QR Code Free</h1>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
               Siga este guia simples para criar QR codes personalizados em poucos passos
             </p>
