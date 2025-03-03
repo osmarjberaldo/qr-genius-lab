@@ -20,7 +20,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <BrowserRouter basename="/qrcodefree">
         <div className="flex flex-col min-h-screen">
           <Header />
           <main className="flex-1">

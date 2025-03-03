@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import QRCodePreview from "./QRCodePreview";
 import QRCodeTypeSelector from "./QRCodeTypeSelector";
 import QRCodeFormContent from "./QRCodeFormContent";
@@ -8,6 +8,8 @@ import Container from "../ui-elements/Container";
 import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { QRCodeType, QRCodeData, QRCodeCustomizationOptions } from "@/types/qr-types";
+import { FeedbackButton } from "@/components/ui/feedback-button";
+import { AdBlockDetector } from "@/components/ui/adblock-detector";
 
 const QRCodeGenerator = () => {
   const [qrType, setQrType] = useState<QRCodeType>("url");
@@ -16,7 +18,7 @@ const QRCodeGenerator = () => {
     fgColor: "#000000",
     bgColor: "#FFFFFF",
     includeMargin: true,
-    size: 200,
+    size: 384,
     level: "M",
     imageSource: "",
     cornerType: "square",
@@ -24,10 +26,81 @@ const QRCodeGenerator = () => {
     isGradient: false,
     gradientColors: ["#000000", "#000000"],
   });
+  
+  const [isAdBlockDetected, setIsAdBlockDetected] = useState(false);
+  
+  useEffect(() => {
+    // Create a test ad element to check if it gets blocked
+    const testAd = document.createElement('div');
+    testAd.className = 'adsbox';
+    testAd.innerHTML = '&nbsp;';
+    testAd.style.position = 'absolute';
+    testAd.style.opacity = '0';
+    document.body.appendChild(testAd);
+    
+    // Load Google AdSense script
+    const script = document.createElement('script');
+    script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4204444212752267';
+    script.async = true;
+    script.crossOrigin = 'anonymous';
+    document.head.appendChild(script);
+
+    const detectAdBlock = () => {
+      // Method 1: Check if test ad element is hidden (common ad blocker behavior)
+      const isTestAdHidden = testAd.offsetHeight === 0;
+      
+      // Method 2: Check Google AdSense availability
+      const isAdSenseBlocked = typeof window.adsbygoogle === 'undefined';
+      
+      // Method 3: Try to execute AdSense code
+      let isAdSenseExecutionBlocked = false;
+      try {
+        if (window.adsbygoogle) {
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+        }
+      } catch (e) {
+        isAdSenseExecutionBlocked = true;
+      }
+      
+      // Require at least two methods to confirm ad blocking
+      const adBlockDetected = [
+        isTestAdHidden,
+        isAdSenseBlocked,
+        isAdSenseExecutionBlocked
+      ].filter(Boolean).length >= 2;
+
+      setIsAdBlockDetected(adBlockDetected);
+      
+      // Clean up test element
+      if (testAd && testAd.parentNode) {
+        testAd.parentNode.removeChild(testAd);
+      }
+    };
+    // Give more time for ad blockers to act and for AdSense to load
+    const timer = setTimeout(detectAdBlock, 3000);
+    return () => {
+      clearTimeout(timer);
+      // Clean up test element if component unmounts before detection
+      if (testAd && testAd.parentNode) {
+        testAd.parentNode.removeChild(testAd);
+      }
+    };
+  }, []);
 
   const handleTypeChange = (type: QRCodeType) => {
     setQrType(type);
-    setQrData({} as QRCodeData);
+    // Initialize with appropriate empty data structure based on type
+    const initialData: Partial<QRCodeData> = {};
+    if (type === "url") initialData.url = "";
+    if (type === "text") initialData.text = "";
+    if (type === "phone") initialData.phoneNumber = "";
+    if (type === "email") initialData.emailAddress = "";
+    if (type === "wifi") initialData.ssid = "";
+    if (type === "pix") {
+      initialData.pixKey = "";
+      initialData.merchantName = "";
+    }
+    setQrData(initialData as QRCodeData);
   };
 
   const handleDataChange = (data: Partial<QRCodeData>) => {
@@ -40,6 +113,7 @@ const QRCodeGenerator = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <AdBlockDetector isAdBlockDetected={isAdBlockDetected} />
       <Container maxWidth="full" className="py-12 px-6 sm:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -102,6 +176,9 @@ const QRCodeGenerator = () => {
                 options={customization}
               />
             </div>
+          </div>
+          <div className="flex justify-center mt-8">
+            <FeedbackButton />
           </div>
         </motion.div>
       </Container>

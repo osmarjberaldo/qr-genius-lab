@@ -20,6 +20,7 @@ import {
   CalendarDays,
   Link2,
   MessageCircle,
+  Share2,
 } from "lucide-react";
 
 interface QRCodeTypeSelectorProps {
@@ -36,6 +37,12 @@ interface QRTypeOption {
 
 const QRCodeTypeSelector = ({ selectedType, onTypeSelect }: QRCodeTypeSelectorProps) => {
   const qrTypes: QRTypeOption[] = [
+    {
+      id: "social",
+      name: "Redes Sociais",
+      icon: <Share2 className="h-5 w-5" />,
+      description: "Links para redes sociais",
+    },
     {
       id: "whatsapp",
       name: "WhatsApp",

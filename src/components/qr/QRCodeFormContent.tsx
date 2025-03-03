@@ -37,6 +37,156 @@ const QRCodeFormContent = ({ type, data, onChange }: QRCodeFormContentProps) => 
 
   const renderFormByType = () => {
     switch (type) {
+      case "social":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="selectedSocial">Selecione a Rede Social</Label>
+              <Select
+                name="selectedSocial"
+                value={data.selectedSocial || "instagram"}
+                onValueChange={(value) => handleSelectChange("selectedSocial", value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione a rede social" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="instagram">Instagram</SelectItem>
+                  <SelectItem value="facebook">Facebook</SelectItem>
+                  <SelectItem value="twitter">Twitter</SelectItem>
+                  <SelectItem value="linkedin">LinkedIn</SelectItem>
+                  <SelectItem value="youtube">YouTube</SelectItem>
+                  <SelectItem value="tiktok">TikTok</SelectItem>
+                  <SelectItem value="pinterest">Pinterest</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            {data.selectedSocial === "instagram" && (
+              <div className="space-y-2">
+                <Label htmlFor="instagram">Nome de Usuário do Instagram</Label>
+                <Input
+                  id="instagram"
+                  name="instagram"
+                  placeholder="@seuperfil"
+                  value={data.instagram || ""}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/^@/, ""); // Remove @ if user types it
+                    onChange({ instagram: value });
+                  }}
+                  onFocus={() => setFocusedInput("instagram")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Digite seu nome de usuário sem o @
+                </p>
+              </div>
+            )}
+            
+            {data.selectedSocial === "facebook" && (
+              <div className="space-y-2">
+                <Label htmlFor="facebook">Nome de Usuário do Facebook</Label>
+                <Input
+                  id="facebook"
+                  name="facebook"
+                  placeholder="seuperfil"
+                  value={data.facebook || ""}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedInput("facebook")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+            )}
+            
+            {data.selectedSocial === "twitter" && (
+              <div className="space-y-2">
+                <Label htmlFor="twitter">Nome de Usuário do Twitter</Label>
+                <Input
+                  id="twitter"
+                  name="twitter"
+                  placeholder="@seuperfil"
+                  value={data.twitter || ""}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/^@/, ""); // Remove @ if user types it
+                    onChange({ twitter: value });
+                  }}
+                  onFocus={() => setFocusedInput("twitter")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Digite seu nome de usuário sem o @
+                </p>
+              </div>
+            )}
+            
+            {data.selectedSocial === "linkedin" && (
+              <div className="space-y-2">
+                <Label htmlFor="linkedin">Nome de Usuário do LinkedIn</Label>
+                <Input
+                  id="linkedin"
+                  name="linkedin"
+                  placeholder="seuperfil"
+                  value={data.linkedin || ""}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedInput("linkedin")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+            )}
+            
+            {data.selectedSocial === "youtube" && (
+              <div className="space-y-2">
+                <Label htmlFor="youtube">Nome do Canal do YouTube</Label>
+                <Input
+                  id="youtube"
+                  name="youtube"
+                  placeholder="@seucanal"
+                  value={data.youtube || ""}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedInput("youtube")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+            )}
+            
+            {data.selectedSocial === "tiktok" && (
+              <div className="space-y-2">
+                <Label htmlFor="tiktok">Nome de Usuário do TikTok</Label>
+                <Input
+                  id="tiktok"
+                  name="tiktok"
+                  placeholder="@seuperfil"
+                  value={data.tiktok || ""}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/^@/, ""); // Remove @ if user types it
+                    onChange({ tiktok: value });
+                  }}
+                  onFocus={() => setFocusedInput("tiktok")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Digite seu nome de usuário sem o @
+                </p>
+              </div>
+            )}
+            
+            {data.selectedSocial === "pinterest" && (
+              <div className="space-y-2">
+                <Label htmlFor="pinterest">Nome de Usuário do Pinterest</Label>
+                <Input
+                  id="pinterest"
+                  name="pinterest"
+                  placeholder="seuperfil"
+                  value={data.pinterest || ""}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedInput("pinterest")}
+                  onBlur={() => setFocusedInput(null)}
+                />
+              </div>
+            )}
+          </div>
+        );
+      
       case "url":
         return (
           <div className="space-y-4">
@@ -92,6 +242,42 @@ const QRCodeFormContent = ({ type, data, onChange }: QRCodeFormContentProps) => 
               />
               <p className="text-xs text-muted-foreground">
                 Suporta links do YouTube, Vimeo e outros serviços de vídeo
+              </p>
+            </div>
+          </div>
+        );
+
+      case "phone":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="phoneNumber">Número de Telefone</Label>
+              <Input
+                id="phoneNumber"
+                name="phoneNumber"
+                placeholder="(99) 99999-9999"
+                value={data.phoneNumber || ""}
+                onChange={(e) => {
+                  let value = e.target.value.replace(/\D/g, "");
+                  if (value.length > 0) {
+                    if (value.length <= 11) {
+                      if (value.length <= 2) {
+                        value = `(${value}`;
+                      } else if (value.length <= 7) {
+                        value = `(${value.slice(0, 2)}) ${value.slice(2)}`;
+                      } else {
+                        value = `(${value.slice(0, 2)}) ${value.slice(2, 7)}-${value.slice(7, 11)}`;
+                      }
+                    }
+                  }
+                  onChange({ phoneNumber: value });
+                }}
+                onFocus={() => setFocusedInput("phoneNumber")}
+                onBlur={() => setFocusedInput(null)}
+                required
+              />
+              <p className="text-xs text-muted-foreground">
+                Digite o número de telefone (apenas números)
               </p>
             </div>
           </div>
@@ -1711,6 +1897,62 @@ const QRCodeFormContent = ({ type, data, onChange }: QRCodeFormContentProps) => 
             </div>
             <p className="text-sm text-muted-foreground">
               Suporta links do Spotify, Apple Music, YouTube Music, Deezer e outros serviços de streaming.
+            </p>
+          </div>
+        );
+
+      case "app":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="url">Link do Aplicativo</Label>
+              <Input
+                id="url"
+                name="url"
+                placeholder="https://play.google.com/store/apps/details?id=com.exemplo"
+                value={data.url || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("url")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Insira o link da Google Play Store ou App Store para seu aplicativo.
+            </p>
+            <div className="space-y-2">
+              <Label htmlFor="appName">Nome do Aplicativo (opcional)</Label>
+              <Input
+                id="appName"
+                name="appName"
+                placeholder="Nome do seu aplicativo"
+                value={data.appName || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("appName")}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </div>
+          </div>
+        );
+        
+      case "text":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="text">Texto</Label>
+              <Textarea
+                id="text"
+                name="text"
+                placeholder="Digite o texto que deseja converter em QR Code"
+                value={data.text || ""}
+                onChange={handleChange}
+                onFocus={() => setFocusedInput("text")}
+                onBlur={() => setFocusedInput(null)}
+                rows={6}
+                className="min-h-[150px]"
+              />
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Digite qualquer texto para gerar um QR Code. Pode ser uma mensagem, uma nota ou qualquer conteúdo textual.
             </p>
           </div>
         );

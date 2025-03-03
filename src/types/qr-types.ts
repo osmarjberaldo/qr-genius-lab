@@ -16,7 +16,8 @@ export type QRCodeType =
   | "video" 
   | "store" 
   | "event" 
-  | "biolink";
+  | "biolink"
+  | "social";
 
 export interface QRCodeData {
   // URL
@@ -65,6 +66,17 @@ export interface QRCodeData {
   startDate?: string;
   endDate?: string;
   description?: string;
+  
+  // Social Media
+  instagram?: string;
+  facebook?: string;
+  twitter?: string;
+  linkedin?: string;
+  youtube?: string;
+  tiktok?: string;
+  pinterest?: string;
+  selectedSocial?: string;
+  text?: string;
 }
 
 export interface QRCodeCustomizationOptions {

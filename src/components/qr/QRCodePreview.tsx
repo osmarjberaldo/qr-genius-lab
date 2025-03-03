@@ -23,19 +23,43 @@ const QRCodePreview = ({ data, type, options }: QRCodePreviewProps) => {
   const [fullPIX, setFullPIX] = useState("");
 
   useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => {
-      generateQRValue();
-      setIsLoading(false);
-    }, 500);
+    if (!isDataEmpty()) {
+      setIsLoading(true);
+      const timer = setTimeout(() => {
+        generateQRValue();
+        setIsLoading(false);
+      }, 500);
 
-    return () => clearTimeout(timer);
+      return () => clearTimeout(timer);
+    } else {
+      setQrValue("");
+    }
   }, [data, type]);
 
   const generateQRValue = () => {
     let value = "";
 
     switch (type) {
+      case "social":
+        const socialType = data.selectedSocial || "instagram";
+        if (socialType === "instagram" && data.instagram) {
+          value = `https://instagram.com/${data.instagram}`;
+        } else if (socialType === "facebook" && data.facebook) {
+          value = `https://facebook.com/${data.facebook}`;
+        } else if (socialType === "twitter" && data.twitter) {
+          value = `https://twitter.com/${data.twitter}`;
+        } else if (socialType === "linkedin" && data.linkedin) {
+          value = `https://linkedin.com/in/${data.linkedin}`;
+        } else if (socialType === "youtube" && data.youtube) {
+          value = `https://youtube.com/${data.youtube}`;
+        } else if (socialType === "tiktok" && data.tiktok) {
+          value = `https://tiktok.com/@${data.tiktok}`;
+        } else if (socialType === "pinterest" && data.pinterest) {
+          value = `https://pinterest.com/${data.pinterest}`;
+        } else {
+          value = "";
+        }
+        break;
       case "whatsapp":
         const phoneNumber = data.phoneNumber?.replace(/\D/g, "") || "";
         value = `https://wa.me/${phoneNumber}${data.message ? "?text=" + encodeURIComponent(data.message) : ""}`;
@@ -87,7 +111,15 @@ END:VEVENT`;
         value = data.url || "";
         break;
       case "phone":
-        value = `tel:${data.phoneNumber || ""}`;
+        const formattedPhone = data.phoneNumber?.replace(/\D/g, "") || "";
+        if (formattedPhone.length > 0) {
+          // Format phone number properly for tel: protocol
+          // If it already has country code (starts with 55), use it, otherwise add it
+          const phoneWithCountry = formattedPhone.startsWith("55") ? formattedPhone : `55${formattedPhone}`;
+          value = `tel:+${phoneWithCountry}`;
+        } else {
+          value = "";
+        }
         break;
       case "app":
         value = data.url || "";
@@ -105,7 +137,23 @@ END:VEVENT`;
         value = data.url || "";
         break;
       case "music":
-        value = data.url || "";
+        if (!data.url) {
+          value = "";
+          break;
+        }
+        // Validate and format music streaming URLs
+        const musicUrl = data.url.trim();
+        if (musicUrl.includes("spotify.com") || 
+            musicUrl.includes("music.apple.com") || 
+            musicUrl.includes("music.youtube.com") || 
+            musicUrl.includes("youtube.com/watch") || 
+            musicUrl.includes("youtu.be") || 
+            musicUrl.includes("deezer.com") || 
+            musicUrl.includes("soundcloud.com")) {
+          value = musicUrl.startsWith("http") ? musicUrl : `https://${musicUrl}`;
+        } else {
+          value = musicUrl.startsWith("http") ? musicUrl : `https://${musicUrl}`;
+        }
         break;
       case "text":
         value = data.text || "";
@@ -184,6 +232,17 @@ END:VEVENT`;
   };
 
   const isDataEmpty = () => {
+    if (type === "social") {
+      const socialType = data.selectedSocial || "instagram";
+      if (socialType === "instagram") return !data.instagram;
+      if (socialType === "facebook") return !data.facebook;
+      if (socialType === "twitter") return !data.twitter;
+      if (socialType === "linkedin") return !data.linkedin;
+      if (socialType === "youtube") return !data.youtube;
+      if (socialType === "tiktok") return !data.tiktok;
+      if (socialType === "pinterest") return !data.pinterest;
+      return true;
+    }
     if (type === "whatsapp") return !data.phoneNumber;
     if (type === "url") return !data.url;
     if (type === "vcard") return !data.firstName && !data.lastName && !data.email && !data.phone;
@@ -196,6 +255,13 @@ END:VEVENT`;
     if (type === "event") return !data.title;
     if (type === "pdf") return !data.url || !data.url.toLowerCase().endsWith('.pdf');
     if (type === "app") return !data.url;
+    if (type === "phone") return !data.phoneNumber;
+    if (type === "image") return !data.url;
+    if (type === "video") return !data.url;
+    if (type === "store") return !data.url;
+    if (type === "biolink") return !data.url;
+    if (type === "music") return !data.url;
+    if (type === "text") return !data.text;
     return true;
   };
 
