@@ -1,0 +1,27 @@
+{
+  "name": "QR Code Free - Gerador de QR Code PIX Grátis",
+  "short_name": "QR Code Free",
+  "description": "Crie QR codes personalizados grátis online. Gerador de QR code free para URL, contatos, WiFi, PIX, redes sociais e mais.",
+  "start_url": "https://devosmar.com.br/qrcodefree/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#8438ff",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["productivity", "utilities", "tools"],
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "orientation": "any",
+  "screenshots": [
+    {
+      "src": "og-imge.jpg",
+      "sizes": "1200x630",
+      "type": "image/jpeg"
+    }
+  ]
+} 

@@ -1,0 +1,9 @@
+# Permitir que todos os robôs de mecanismos de busca indexem o site
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://devosmar.com.br/qrcodefree/sitemap.xml
+
+# Tempos de rastreio (em segundos)
+Crawl-delay: 10 

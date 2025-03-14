@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 import PIX from "react-qrcode-pix";
@@ -304,7 +303,7 @@ END:VEVENT`;
                 code={"RQP" + now}
                 amount={data.amount ? parseFloat(data.amount) : undefined}
                 onLoad={setFullPIX}
-                resize={384}
+                resize={Math.min(384, window.innerWidth > 768 ? 384 : window.innerWidth - 80)}
                 variant="fluid"
                 padding={30}
                 color={options.fgColor}
@@ -316,7 +315,7 @@ END:VEVENT`;
               <QRCodeCanvas
                 id="qrcode"
                 value={qrValue}
-                size={options.size}
+                size={Math.min(options.size, window.innerWidth > 768 ? options.size : window.innerWidth - 80)}
                 bgColor={options.isGradient ? "transparent" : options.bgColor}
                 fgColor={options.fgColor}
                 level={options.level as "L" | "M" | "Q" | "H"}
@@ -338,12 +337,12 @@ END:VEVENT`;
           </div>
         )}
       </motion.div>
-      <div className="flex space-x-4 mt-6">
+      <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 mt-6 w-full sm:w-auto">
         <Button
           variant="outline"
           onClick={downloadQRCode}
           disabled={isDataEmpty() || isLoading}
-          className="rounded-full"
+          className="rounded-full w-full sm:w-auto"
         >
           <Download size={18} className="mr-2" />
           Baixar
@@ -351,7 +350,7 @@ END:VEVENT`;
         <Button
           onClick={shareQRCode}
           disabled={isDataEmpty() || isLoading}
-          className="rounded-full"
+          className="rounded-full w-full sm:w-auto"
         >
           <Share2 size={18} className="mr-2" />
           Compartilhar
