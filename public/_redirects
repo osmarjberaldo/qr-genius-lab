@@ -1,0 +1,3 @@
+# Redirecionamentos para manter URLs antigas funcionando
+/qrcode/* /qrcodefree/:splat 301
+/* /index.html 200 

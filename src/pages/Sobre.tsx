@@ -13,7 +13,7 @@ const Sobre = () => {
       </Helmet>
       
       <div className="py-12 bg-gradient-to-br from-background to-accent/10">
-        <Container maxWidth="max-w-5xl" className="px-6">
+        <Container maxWidth="xl" className="px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
